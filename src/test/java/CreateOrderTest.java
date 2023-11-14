@@ -9,8 +9,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.apache.http.HttpStatus.*;
+import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class CreateOrderTest {
@@ -46,8 +46,8 @@ public class CreateOrderTest {
         ValidatableResponse response = orderClient.createOrder(order);
 
         int statusCode = response.extract().statusCode();
-        assertEquals(201, statusCode);
+        assertEquals(SC_CREATED, statusCode);
         int track = response.extract().path("track");
-        assertNotEquals(0, track);
+        assertNotNull(track);
     }
 }

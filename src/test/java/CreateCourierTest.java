@@ -12,6 +12,7 @@ import org.junit.Test;
 import static constants.ErrorMessages.ERROR_NOT_ENOUGH_CREDENTIALS_FOR_CREATE;
 import static constants.ErrorMessages.ERROR_THIS_LOGIN_IS_ALREADY_IN_USE;
 import static org.junit.Assert.*;
+import static org.apache.http.HttpStatus.*;
 
 public class CreateCourierTest {
     private Courier courier;
@@ -32,11 +33,11 @@ public class CreateCourierTest {
         ValidatableResponse loginResponse = courierClient.login(CourierCredentials.from(courier));
 
         int loginStatusCode = loginResponse.extract().statusCode();
-        assertEquals(200, loginStatusCode);
+        assertEquals(SC_OK, loginStatusCode);
         int statusCode = response.extract().statusCode();
-        assertEquals(201, statusCode);
+        assertEquals(SC_CREATED, statusCode);
         courierId = loginResponse.extract().path("id");
-        assertNotEquals(0, courierId);
+        assertNotNull(courierId);
         boolean isCreated = response.extract().path("ok");
         assertTrue(isCreated);
     }
@@ -53,7 +54,7 @@ public class CreateCourierTest {
         ValidatableResponse response = courierClient.create(courier);
 
         int statusCode = response.extract().statusCode();
-        assertEquals(409, statusCode);
+        assertEquals(SC_CONFLICT, statusCode);
         String responseBody = response.extract().path("message");
         assertEquals(ERROR_THIS_LOGIN_IS_ALREADY_IN_USE, responseBody);
     }
@@ -70,7 +71,7 @@ public class CreateCourierTest {
         ValidatableResponse response = courierClient.create(courier);
 
         int statusCode = response.extract().statusCode();
-        assertEquals(400, statusCode);
+        assertEquals(SC_BAD_REQUEST, statusCode);
         String responseBody = response.extract().path("message");
         assertEquals(ERROR_NOT_ENOUGH_CREDENTIALS_FOR_CREATE, responseBody);
     }

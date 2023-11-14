@@ -9,6 +9,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.apache.http.HttpStatus.*;
 
 public class OrderListTest {
     private OrderClient orderClient;
@@ -25,7 +26,7 @@ public class OrderListTest {
         ValidatableResponse response = orderClient.getOrderList();
 
         int statusCode = response.extract().statusCode();
-        assertEquals(200, statusCode);
+        assertEquals(SC_OK, statusCode);
 
         List<String> bodyAnswer = response.extract().path("orders");
         assertFalse(bodyAnswer.isEmpty());

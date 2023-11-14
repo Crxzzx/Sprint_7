@@ -9,10 +9,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static constants.ErrorMessages.ERROR_ACCOUNT_NOT_FIND;
+import static constants.ErrorMessages.ERROR_ACCOUNT_NOT_FOUND;
 import static constants.ErrorMessages.ERROR_NOT_ENOUGH_CREDENTIALS;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.apache.http.HttpStatus.*;
+import static org.junit.Assert.*;
 
 public class LoginCourierTest {
     private Courier courier;
@@ -33,9 +33,9 @@ public class LoginCourierTest {
         ValidatableResponse response = courierSteps.login(CourierCredentials.from(courier));
 
         int statusCode = response.extract().statusCode();
-        assertEquals(200, statusCode);
+        assertEquals(SC_OK, statusCode);
         courierId = response.extract().path("id");
-        assertNotEquals(0, courierId);
+        assertNotNull(courierId);
     }
 
     @Test
@@ -47,9 +47,9 @@ public class LoginCourierTest {
         courierId = courierSteps.login(CourierCredentials.from(courier)).extract().path("id");
 
         int statusCode = response.extract().statusCode();
-        assertEquals(404, statusCode);
+        assertEquals(SC_NOT_FOUND, statusCode);
         String answer = response.extract().path("message");
-        assertEquals(ERROR_ACCOUNT_NOT_FIND, answer);
+        assertEquals(ERROR_ACCOUNT_NOT_FOUND, answer);
     }
 
     @Test
@@ -61,9 +61,9 @@ public class LoginCourierTest {
         courierId = courierSteps.login(CourierCredentials.from(courier)).extract().path("id");
 
         int statusCode = response.extract().statusCode();
-        assertEquals(404, statusCode);
+        assertEquals(SC_NOT_FOUND, statusCode);
         String answer = response.extract().path("message");
-        assertEquals(ERROR_ACCOUNT_NOT_FIND, answer);
+        assertEquals(ERROR_ACCOUNT_NOT_FOUND, answer);
     }
 
     @Test
@@ -75,7 +75,7 @@ public class LoginCourierTest {
         courierId = courierSteps.login(CourierCredentials.from(courier)).extract().path("id");
 
         int statusCode = response.extract().statusCode();
-        assertEquals(400, statusCode);
+        assertEquals(SC_BAD_REQUEST, statusCode);
         String answer = response.extract().path("message");
         assertEquals(ERROR_NOT_ENOUGH_CREDENTIALS, answer);
     }
